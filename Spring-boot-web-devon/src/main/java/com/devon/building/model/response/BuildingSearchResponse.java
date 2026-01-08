@@ -1,26 +1,29 @@
 package com.devon.building.model.response;
 
-import com.devon.building.model.dto.AbstractDTO;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BuildingSearchResponse extends AbstractDTO {
+public class BuildingSearchResponse {
 
-    private String name;
-    private String address;
-    private Long numberOfBasement;
-    private String managerName;
-    private String managerPhone;
-    private Long floorArea;
-    private String rentArea;
-    private String emptyArea;
-    private Long rentPrice;
-    private String serviceFee;
-    private Double brokerageFee;
+    Long id;
+    String name;
+    Long numberOfBasement;
+    String address;
+    Long floorArea;
+    String rentArea;
+    List<Long> emptyRentArea;
+    long serviceFee;
+    double brokerageFee;
+    Long rentPrice;
+    String managerName;
+    String managerPhone;
+
+
 }

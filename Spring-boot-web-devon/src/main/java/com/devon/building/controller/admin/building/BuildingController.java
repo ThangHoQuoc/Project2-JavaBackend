@@ -1,6 +1,6 @@
 package com.devon.building.controller.admin.building;
 
-import com.devon.building.entity.Building;
+
 import com.devon.building.enums.District;
 import com.devon.building.enums.RentType;
 import com.devon.building.form.CustomerForm;
@@ -39,33 +39,14 @@ public class BuildingController {
         model.addAttribute("typeCode", RentType.getTypeCode());
         List<BuildingSearchResponse> resultsBuilding = new ArrayList<>();
 
-        BuildingSearchResponse buildingSearchResponse = buildingService.
+       List<BuildingSearchResponse>  buildingSearchResponses = buildingService.searchBuildings(buildingSearchRequest);
 
 
-        BuildingSearchResponse building1 = new BuildingSearchResponse();
-        building1.setId(22L);
-        building1.setName("Devon Building");
-        building1.setAddress("Man Thiện, Phường ó, Quận Thủ Đức");
-        building1. setManagerName("Anh Manh");
-        building1. setManagerPhone("090-0001-068");
+       for (BuildingSearchResponse building : buildingSearchResponses ){
+           resultsBuilding.add(building);
+       }
 
-        BuildingSearchResponse building2 = new BuildingSearchResponse();
-        building2.setId(33L);
-        building2.setName("lankMark Building");
-        building2.setAddress("Man Thiện, Phường ó, Quận Thủ Đức");
-        building2. setManagerName("Chị Hải");
-        building2. setManagerPhone("090-0001-068");
 
-        BuildingSearchResponse building3 = new BuildingSearchResponse();
-        building3.setId(11L);
-        building3.setName("Top Building");
-        building3.setAddress("Man Thiện, Phường ó, Quận Thủ Đức");
-        building3. setManagerName("Anh Manh");
-        building3. setManagerPhone("090-0001-068");
-
-        resultsBuilding.add(building3);
-        resultsBuilding.add(building1);
-        resultsBuilding.add(building2);
 
         model.addAttribute("resultsBuilding",resultsBuilding);
         return "admin/building/buildingList";
@@ -80,7 +61,7 @@ public class BuildingController {
     }
     @GetMapping("/update/{id}")
     public String createBuilding(@PathVariable Long id, Model model) {
-        BuildingDTO building =  buildingService.findId(id);
+        BuildingSearchResponse building =  buildingService.findId(id);
         model.addAttribute("districts", District.getDistrict());
         model.addAttribute("typeCode", RentType.getTypeCode());
         model.addAttribute("building",building);

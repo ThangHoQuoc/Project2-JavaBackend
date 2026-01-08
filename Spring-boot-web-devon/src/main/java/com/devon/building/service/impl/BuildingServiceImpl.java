@@ -1,10 +1,15 @@
 package com.devon.building.service.impl;
 
-import com.devon.building.entity.Building;
-import com.devon.building.entity.User;
+import com.devon.building.builder.BuildingSearchBuilder;
+import com.devon.building.convertor.BuildingConvertor;
+import com.devon.building.convertor.BuildingSearchBuilderConvertor;
+import com.devon.building.entity.BuildingEntity;
+import com.devon.building.entity.UserEntity;
 import com.devon.building.model.dto.BuildingDTO;
 import com.devon.building.model.dto.ResponseDTO;
 import com.devon.building.model.dto.StaffResponseDTO;
+import com.devon.building.model.request.BuildingSearchRequest;
+import com.devon.building.model.response.BuildingSearchResponse;
 import com.devon.building.repository.BuildingRepository;
 import com.devon.building.repository.UserRepository;
 import com.devon.building.service.BuildingService;
@@ -26,26 +31,30 @@ public class BuildingServiceImpl implements BuildingService {
     private BuildingRepository buildingRepository;
 
     @Autowired
-    private BuildingSearchConvertor buildingSearchConvertor;
-    @Override
-    public BuildingDTO findId(Long id) {
+    private BuildingConvertor buildingConvertor;
 
-        Building building = buildingRepository.findBuildingsById(id);
-        BuildingDTO buildingDTO = buildingSearchConvertor.toBuildingDTO(building);
+    @Autowired
+    private BuildingSearchBuilderConvertor builderConvertor;
+
+    @Override
+    public BuildingSearchResponse findId(Long id) {
+
+        BuildingEntity building = buildingRepository.findBuildingsById(id);
+        BuildingSearchResponse buildingDTO = buildingConvertor.toResponseDTO(building);
         return buildingDTO;
     }
 
     @Override
-    public List<BuildingResponseDTO> searchBuildings(Map<String, String> params, List<String> typeCode) {
-        BuildingSearchBuilder buildingSearchBuilder = builderConvertor.toBuildingSearchBuilder(params, typeCode);
+    public List<BuildingSearchResponse> searchBuildings( BuildingSearchRequest buildingSearchRequest) {
+        BuildingSearchBuilder buildingSearchBuilder = builderConvertor.toBuildingSearchBuilder(buildingSearchRequest);
 
         List<BuildingEntity> entities = buildingRepository.searchBuildings(buildingSearchBuilder);
 
 //		BuildingEntity buildingEntity = buildingRepository.findById(4L).get(); // tránh lỗi NullPoniterEx
-        List<BuildingResponseDTO> result = new ArrayList<>();
+        List<BuildingSearchResponse> result = new ArrayList<>();
 
         for (BuildingEntity entity : entities) {
-            BuildingResponseDTO buildingResponseDTO = buildingConvertor.toResponseDTO(entity);
+            BuildingSearchResponse buildingResponseDTO = buildingConvertor.toResponseDTO(entity);
             result.add(buildingResponseDTO);
 
 
@@ -58,7 +67,7 @@ public class BuildingServiceImpl implements BuildingService {
     @Override
     public ResponseDTO loadStaffByBuildingId(Long id) {
         ResponseDTO responseDTO = new ResponseDTO();
-        List<User> allStaff = userRepository.findByActiveAndUserRole(true, "ROLE_" + User.ROLE_EMPLOYEE); // đang quan lí và không quản lí
+        List<UserEntity> allStaff = userRepository.findByActiveAndUserRole(true, "ROLE_" + UserEntity.ROLE_EMPLOYEE); // đang quan lí và không quản lí
 //               Set<User> assignedBuilding = buildingRepository... // đang quản lí
         List<StaffResponseDTO> staffResponseDTO = new ArrayList<>();
 

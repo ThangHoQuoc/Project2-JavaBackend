@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 
 
+
 @RestController
 @RequestMapping("/admin/api/buildings")
 public class BuildingAPI {

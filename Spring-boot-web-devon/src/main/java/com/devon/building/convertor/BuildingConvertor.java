@@ -1,12 +1,17 @@
 package com.devon.building.convertor;
 
-import com.devon.building.entity.Building;
+import com.devon.building.entity.BuildingEntity;
+import com.devon.building.exception.InvalidBuildingException;
+import com.devon.building.model.request.BuildingSearchRequest;
 import com.devon.building.model.response.BuildingSearchResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class BuildingConvertor {
@@ -18,30 +23,16 @@ public class BuildingConvertor {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public BuildingSearchResponse toResponseDTO(Building entity) {
+    public BuildingSearchResponse toResponseDTO(BuildingEntity entity) {
         BuildingSearchResponse dto = modelMapper.map(entity, BuildingSearchResponse.class);
 
-        Dictrict dictrict = entity.getDictrictEntity();
-
-        dto.setAddress(entity.getStreet() + ", " + entity.getWard() + ", " + dictrict.getName());
-
-        List<RentAreaEntity> rentAreas = entity.getRentAreaEntities();
-
-        dto.setRentArea(
-                rentAreas.stream().map(rentArea -> rentArea.getValue().toString()).collect(Collectors.joining(",")));
 
 
         return dto;
     }
 
-    public BuildingEntity toBuildingEntity(BuildingRequestDTO buildingRequestDTO) {
+    public BuildingEntity toBuildingEntity(BuildingSearchRequest buildingRequestDTO) {
         BuildingEntity buildingEntity = modelMapper.map(buildingRequestDTO, BuildingEntity.class);
-        DictrictEntity district = entityManager.find( DictrictEntity.class,buildingRequestDTO.getDistrictId());
-        if(district != null) {
-            buildingEntity.setDictrictEntity(district);
-        }else {
-            throw new InvalidBuildingException("not found district by id");
-        }
 
 
 

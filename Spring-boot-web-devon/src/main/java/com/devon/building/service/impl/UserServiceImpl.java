@@ -1,8 +1,8 @@
 package com.devon.building.service.impl;
 
 import com.devon.building.constant.SystemConstant;
-import com.devon.building.entity.User;
-import com.devon.building.enums.UserRole;
+import com.devon.building.entity.UserEntity;
+
 import com.devon.building.model.dto.UserDTO;
 import com.devon.building.pagination.PaginationResult;
 import com.devon.building.repository.UserRepository;
@@ -31,9 +31,9 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public PaginationResult<User> listUserInfo(String key, int page, int maxResult, int maxNavigationPage) {
-        StringBuilder sql = new StringBuilder("SELECT NEW " + User.class.getName() + "(u.id, u.userName, u.active, u.userRole, u.fullName, u.phone) " + "FROM " + User.class.getName() + " u ");
-        StringBuilder countSql = new StringBuilder("SELECT COUNT(u.id) FROM " + User.class.getName() + " u ");
+    public PaginationResult<UserEntity> listUserInfo(String key, int page, int maxResult, int maxNavigationPage) {
+        StringBuilder sql = new StringBuilder("SELECT NEW " + UserEntity.class.getName() + "(u.id, u.userName, u.active, u.userRole, u.fullName, u.phone) " + "FROM " + UserEntity.class.getName() + " u ");
+        StringBuilder countSql = new StringBuilder("SELECT COUNT(u.id) FROM " + UserEntity.class.getName() + " u ");
 
         if (key != null && !key.trim().isEmpty()) {
             sql.append("WHERE (LOWER(u.userName) LIKE :key OR LOWER(u.fullName) LIKE :key OR LOWER(u.phone) LIKE :key) ");
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
         sql.append("ORDER BY u.userName DESC");
 
-        TypedQuery<User> query = entityManager.createQuery(sql.toString(), User.class);
+        TypedQuery<UserEntity> query = entityManager.createQuery(sql.toString(), UserEntity.class);
         TypedQuery<Long> countQuery = entityManager.createQuery(countSql.toString(), Long.class);
 
         if (key != null && !key.trim().isEmpty()) {
@@ -56,19 +56,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserDTO userDTO) {
         String userName = userDTO.getUserName();
-        User user = null;
+        UserEntity user = null;
         if (userName != null && !userName.isEmpty()) {
             user = userRepository.findByUserName(userName);
         }
         if (user != null) {
             throw new EntityExistsException("User with name " + userName + " already exists");
         }
-        user = new User();
+        user = new UserEntity();
         user.setUserName(userName);
         user.setActive(true);
         user.setFullName(userDTO.getFullName());
         user.setEncrytedPassword(passwordEncoder.encode(SystemConstant.PASSWORD_DEFAULT));
-        user.setUserRole("ROLE_" +User.ROLE_MANAGER);
+        user.setUserRole("ROLE_" +UserEntity.ROLE_MANAGER);
         if (userDTO.getFileData() != null) {
             byte[] image = null;
             try {
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(UserDTO userDTO) {
         String userName = userDTO.getUserName();
-        User user = null;
+        UserEntity user = null;
         if (userName != null && !userName.isEmpty()) {
             user = userRepository.findByUserName(userName);
         }
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(List<Long> ids) {
         for (Long id : ids) {
-            Optional<User> user = userRepository.findById(id);
+            Optional<UserEntity> user = userRepository.findById(id);
             user.ifPresent(value -> value.setActive(false));
             userRepository.flush();
         }
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<Long, String> getAllStaff() {
-        List<User> allStaff =  userRepository.findByActiveAndUserRole(true, "ROLE_" + User.ROLE_EMPLOYEE);
-        return allStaff.stream().collect(Collectors.toMap(User::getId, User:: getUserName));
+        List<UserEntity> allStaff =  userRepository.findByActiveAndUserRole(true, "ROLE_" + UserEntity.ROLE_EMPLOYEE);
+        return allStaff.stream().collect(Collectors.toMap(UserEntity::getId, UserEntity:: getUserName));
     }
 }

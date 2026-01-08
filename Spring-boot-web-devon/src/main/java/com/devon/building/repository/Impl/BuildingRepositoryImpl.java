@@ -1,7 +1,7 @@
 package com.devon.building.repository.Impl;
 
 import com.devon.building.builder.BuildingSearchBuilder;
-import com.devon.building.entity.Building;
+import com.devon.building.entity.BuildingEntity;
 import com.devon.building.repository.BuildingRepositoryCustom;
 import com.devon.building.utils.StringUtil;
 import jakarta.persistence.EntityManager;
@@ -129,7 +129,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     }
 
     @Override
-    public List<Building> searchBuildings(BuildingSearchBuilder buildingSearchBuilder) {
+    public List<BuildingEntity> searchBuildings(BuildingSearchBuilder buildingSearchBuilder) {
         StringBuilder sql = new StringBuilder(
                 "SELECT b.* FROM building b ");
         StringBuilder where = new StringBuilder(" WHERE 1=1 ");
@@ -141,7 +141,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         sql.append(where);
         sql.append(" GROUP BY b.id");
 
-        Query query = entityManager.createNativeQuery(sql.toString(), Building.class);
+        Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
 
         return query.getResultList();
 

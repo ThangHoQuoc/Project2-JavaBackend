@@ -20,7 +20,7 @@ public class BuildingSearchRequest {
     String district;
     String ward;
     String street;
-    String numberOfBasement;
+    Long numberOfBasement;
     String direction;
     Long Level;
     Long rentAreaFrom;

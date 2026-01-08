@@ -1,7 +1,7 @@
 package com.devon.building.controller.admin.user;
 
 import com.devon.building.constant.SystemConstant;
-import com.devon.building.entity.User;
+import com.devon.building.entity.UserEntity;
 import com.devon.building.model.dto.UserDTO;
 import com.devon.building.pagination.PaginationResult;
 import com.devon.building.repository.UserRepository;
@@ -44,7 +44,7 @@ public class UserController {
         }
         final int MAX_RESULT = 5;
         final int MAX_NAVIGATION_PAGE = 10;
-        PaginationResult<User> paginationResult = userService.listUserInfo(key, page, MAX_RESULT, MAX_NAVIGATION_PAGE);
+        PaginationResult<UserEntity> paginationResult = userService.listUserInfo(key, page, MAX_RESULT, MAX_NAVIGATION_PAGE);
         modelAndView.addObject("model", paginationResult);
         initMessageResponse(modelAndView, request);
         return modelAndView;
@@ -64,7 +64,7 @@ public class UserController {
         ModelAndView model = new ModelAndView("admin/user/userEdit");
         UserDTO userDTO = null;
         if (!userName.trim().isEmpty()) {
-            User user = userRepository.findByUserName(userName);
+            UserEntity user = userRepository.findByUserName(userName);
             if (user != null) {
                 userDTO = new UserDTO();
                 userDTO.setId(user.getId());
@@ -91,7 +91,7 @@ public class UserController {
 
     @GetMapping("/userImage")
     public void productImage(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "userName", defaultValue = "") String userName) throws IOException {
-        User user = null;
+        UserEntity user = null;
         if (userName != null && !userName.isBlank()) {
             user = userRepository.findByUserName(userName);
         }
@@ -108,7 +108,7 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView("admin/user/change-password");
         UserDTO user = null;
         if (id != null) {
-            User userEntity = userRepository.findById(id).orElseThrow();
+            UserEntity userEntity = userRepository.findById(id).orElseThrow();
             user = new UserDTO();
             user.setId(userEntity.getId());
             user.setUserName(userEntity.getUserName());
