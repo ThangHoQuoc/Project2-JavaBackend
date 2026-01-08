@@ -23,3 +23,5 @@ public enum UserRole {
         return label;       // Manager
     }
 }
+
+.
