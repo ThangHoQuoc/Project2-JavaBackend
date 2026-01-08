@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Devon-Building</title>
+    <th:block th:replace="~{admin/common/header :: header}"></th:block>
+</head>
+<body class="no-skin" style="font-family: 'Abel', sans-serif;">
+<th:block th:replace="~{admin/common/menu :: menu}"></th:block>
+<div class="main-container" id="main-container">
+    <script type="text/javascript">
+        try {
+            ace.settings.check('main-container', 'fixed')
+        } catch (e) {
+        }
+    </script>
+    <th:block th:replace="~{admin/common/sidebar :: sidebar}"></th:block>
+    <div class="main-content">
+        <div class="main-content-inner">
+            <div class="breadcrumbs" id="breadcrumbs">
+                <script type="text/javascript">
+                    try {
+                        ace.settings.check('breadcrumbs', 'fixed')
+                    } catch (e) {
+                    }
+                </script>
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="ace-icon fa fa-home home-icon"></i>
+                        <a href="#">Home</a>
+                    </li>
+                    <li class="active">Dashboard</li>
+                </ul><!-- /.breadcrumb -->
+            </div>
+
+            <div class="page-content">
+                <div class="page-header">
+                    <h1>
+                        Thông tin tòa nhà
+                        <small>
+                            <i class="ace-icon fa fa-angle-double-right"></i>
+                            overview &amp; stats
+                        </small>
+                    </h1>
+                </div><!-- /.page-header -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!-- PAGE CONTENT BEGINS -->
+                        <div class="widget-box">
+                            <div class="widget-header">
+                                <h4 class="widget-title">Thông tin tòa nhà</h4>
+                            </div>
+
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <form class="form-horizontal" id="form-edit" method="get" th:object ="${building}">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Tên tòa nhà </label>
+                                            <div class="col-sm-5">
+                                                <input type="text" placeholder="Nhập tên tòa nhà..."
+                                                       class="form-control"
+                                                       id="name" name="name" th:value ="${building.name}">
+                                                <span class="error-message" id="noName"
+                                                      style="display: none;color: red;">Vui lòng nhập tên tòa
+														nhà</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Quận </label>
+                                            <div class="col-sm-3">
+                                                <select name="district" id="districtId" class="form-control">
+                                                    <option value="">----</option>
+                                                    <option th:each = "district: ${districts}"
+                                                            th:value = "${district.key}"
+                                                            th:text = "${district.value}"
+                                                            th:selected="${district.key == building.district}"
+                                                    ></option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Phường </label>
+                                            <div class="col-sm-5">
+                                                <input type="text" placeholder="Nhập phường..." class="form-control"
+                                                       id="ward" name="ward" th:value ="${building.ward}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Đường </label>
+                                            <div class="col-sm-5">
+                                                <input type="text" placeholder="Nhập tên đường..."
+                                                       class="form-control" id="street" name="street" th:value ="${building.street}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Kết cấu </label>
+                                            <div class="col-sm-5">
+                                                <input type="text" placeholder="" class="form-control"
+                                                       id="structure" name="structure" th:value ="${building.structure}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Số tầng hầm </label>
+                                            <div class="col-sm-5">
+                                                <input type="number" placeholder="Nhập số tầng hầm..."
+                                                       class="form-control" id="numberOfBasement"
+                                                       name="numberOfBasement" th:value ="${building.numberOfBasement}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Diện tích
+                                                sàn </label>
+                                            <div class="col-sm-5">
+                                                <input type="text" placeholder="Nhập diện tích sàn..."
+                                                       class="form-control" id="floorArea" name="floorArea" th:value ="${building.floorArea}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Diện tích
+                                                thuê </label>
+                                            <div class="col-sm-5">
+                                                <input type="text" placeholder="Nhập diện tích thuê..."
+                                                       class="form-control" id="rentArea" name="rentArea" th:value ="${building.rentArea}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right"> Số điện thoại quản
+                                                lý </label>
+                                            <div class="col-sm-5">
+                                                <input type="text" placeholder="Nhập số điện thoại..."
+                                                       class="form-control" id="managerPhoneNumber"
+                                                       name="managerPhoneNumber" th:value ="${building.managerPhoneNumber}">
+                                                <span class="error-message" id="noManagerPhone"
+                                                      style="display: none;color: red;">SĐT phải có đúng 10 số</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right">Loại tòa nhà</label>
+                                            <div class="col-xs-7" >
+                                                <Label class="checkbox-inline" th:each="type: ${typeCode}">
+                                                    <input type="checkbox"
+                                                           name="typeCode"
+                                                           class="checkbox-inline"
+                                                           th:value="${type.key}"
+                                                           th:checked="${building.typeCode != null
+                                                                           and building.typeCode.contains(type.key)}">
+                                                    <span th:text="${type.value}"></span>
+                                                </label>
+                                                <span class="error-message" id="noType"
+                                                      style="display:none; color: red;">Vui lòng chọn loại tòa nhà</span>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-actions center">
+                                            <a th:href="@{/admin/buildings/list}">
+                                                <button type="button" class="btn btn-sm btn-danger">
+                                                    Hủy thao tác
+                                                    <i class="ace-icon glyphicon glyphicon-remove bigger-110"></i>
+                                                </button>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-success"
+                                                    id="btnAddBuilding" th:text ="${building.id} != null ? 'Cập nhật thông tin': 'Thêm tòa nhà'">
+                                                Thêm tòa nhà
+                                                <i class="ace-icon glyphicon glyphicon-ok bigger-110"></i>
+                                            </button>
+                                        </div>
+                                        <input type="hidden" id="id" th:value="${building.id}">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- PAGE CONTENT ENDS -->
+                    </div><!-- /.span -->
+                </div>
+            </div><!-- /.page-content -->
+        </div>
+    </div><!-- /.main-content -->
+    <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
+</div><!-- /.main-content -->
+
+<th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
+<script>
+
+    function resetErrorMessages() {
+        document.getElementById("noName").style.display = "none";
+        document.getElementById("noType").style.display = "none";
+        document.getElementById("noManagerPhone").style.display = "none";
+    }
+
+    function validateData(json) {
+        resetErrorMessages(); // reset all error messages
+        let check = true;
+        if (json['name'] === '') {
+            document.getElementById("noName").style.display = "block";
+            check = false;
+        }
+        if (json['typeCode'].length === 0) {
+           document.getElementById("noType").style.display = "block";
+           check = false;
+
+
+         }
+        var phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(json['managerPhoneNumber'])) {
+            document.getElementById("noManagerPhone").style.display = "block";
+            check = false;
+
+        }
+        return check;
+    }
+
+    $('#btnAddBuilding').click(function (e) {
+        e.preventDefault();
+        const json = {};
+        const typeCodes = []; //mảng lưu các loại tòa nhà
+        const formArray = $('#form-edit').serializeArray();
+        $.each(formArray, function (i, item) { // convert array objects to json
+            if (item.name === 'typeCode') {
+                typeCodes.push(item.value);
+            } else {
+                json[item.name] = item.value;
+            }
+        });
+        json['typeCode'] = typeCodes;
+        json['id'] = $('#id').val();
+        if (!validateData(json)) return;
+        validateData(json);
+        console.log(JSON.stringify(json));
+        if(json['id'] != null){
+            updateBuilding(json);
+        }else{
+            addBuilding(json);
+
+        }
+    });
+
+    // Send data to server by AJAX
+    function addBuilding(json) {
+        $.ajax({
+            url: "/admin/api/buildings",
+            type: "POST", // request method
+            data: JSON.stringify(json),// convert object to JSON string
+            contentType: "application/json", // sending data type(From client to server)
+            dataType: 'json', //data type expected from server(From server to client)
+            success: function (response) {
+                alert(response.message)
+                window.location.reload();
+            },
+            error: function (response) {
+                alert(response.responseJSON.detail.join('\n'));
+            }
+        });
+    }
+
+    function updateBuilding(json) {
+        $.ajax({
+            url: "/admin/api/buildings",
+            type: "PUT", // request method
+            data: JSON.stringify(json),// convert object to JSON string
+            contentType: "application/json", // sending data type(From client to server)
+            dataType: 'json', //data type expected from server(From server to client)
+            success: function (response) {
+                alert(response.message)
+                window.location.reload();
+
+            },
+            error: function (response) {
+                alert(response.responseJSON.detail.join('\n'));
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
