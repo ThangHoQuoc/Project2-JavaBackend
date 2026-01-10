@@ -21,7 +21,7 @@ public class BuildingSearchResponse {
     List<Long> emptyRentArea;
     long serviceFee;
     double brokerageFee;
-    Long rentPrice;
+    Long price;
     String managerName;
     String managerPhone;
 

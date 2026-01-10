@@ -1,6 +1,7 @@
 package com.devon.building.convertor;
 
 import com.devon.building.entity.BuildingEntity;
+import com.devon.building.entity.RentAreaEntity;
 import com.devon.building.exception.InvalidBuildingException;
 import com.devon.building.model.request.BuildingSearchRequest;
 import com.devon.building.model.response.BuildingSearchResponse;
@@ -25,6 +26,11 @@ public class BuildingConvertor {
 
     public BuildingSearchResponse toResponseDTO(BuildingEntity entity) {
         BuildingSearchResponse dto = modelMapper.map(entity, BuildingSearchResponse.class);
+
+        List<RentAreaEntity> rentAreas = entity.getRentAreaEntities();
+
+        dto.setRentArea(
+                rentAreas.stream().map(rentArea -> rentArea.getValue().toString()).collect(Collectors.joining(",")));
 
 
 

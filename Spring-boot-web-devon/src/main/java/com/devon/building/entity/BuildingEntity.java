@@ -1,14 +1,14 @@
 package com.devon.building.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,37 +16,59 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "building")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BuildingEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -1000119078147252957L;
+    static final long serialVersionUID = -1000119078147252957L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "name", length = 255, nullable = false)
-    private String name;
+    String name;
 
     @Column(name = "street", length = 255, nullable = false)
-    private String street;
+    String street;
 
     @Column(name = "ward", length = 255, nullable = false)
-    private String ward;
+    String ward;
 
     @Column(name = "district", length = 255, nullable = false)
-    private String district;
+    String district;
+
 
     @Column(name = "rentprice", nullable = false)
-    private double price;
+    Double price;
+
+    @Column(name = "floorarea", nullable = false)
+    Long floorarea;
+
+    @Column(name = "servicefee")
+    Double servicefee;
+
+    @Column(name = "brokeragefee")
+    Double brokeragefee;
 
     @Lob
     @Column(name = "image", length = Integer.MAX_VALUE, nullable = true)
-    private byte[] image;
+    byte[] image;
+
+    @Column(name = "numberofbasement", nullable = false)
+    Long numberofbasement;
+
+    @Column(name = "managername", length = 255, nullable = false)
+    String managername;
+
+    @Column(name = "managerphone", length = 255, nullable = false)
+    String managerphone;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createddate", nullable = false)
-    private Date createDate;
+    Date createDate;
 
 
+   @OneToMany(mappedBy = "buildingEntity")
+   List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
 }

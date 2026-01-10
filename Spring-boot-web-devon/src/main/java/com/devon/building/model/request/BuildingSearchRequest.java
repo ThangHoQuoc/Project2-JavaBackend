@@ -27,8 +27,8 @@ public class BuildingSearchRequest {
     Long rentAreaTo;
     Long rentPriceFrom;
     Long rentPriceTo;
-    String managerNane;
-    String managerPhoneNumber;
+    String managername;
+    String managerphone;
     Long staffId;
     List<String> typeCode;
 

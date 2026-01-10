@@ -159,14 +159,14 @@
                                                 <div class="col-xs-12">
                                                     <div class="col-xs-5">
                                                         <label> Tên quản lý </label>
-                                                        <input type="text" id="managerName" class="form-control"
-                                                               name="managerName" th:value="${modelSearch.managerNane}">
+                                                        <input type="text" id="managername" class="form-control"
+                                                               name="managername" th:value="${modelSearch.managername}">
                                                     </div>
                                                     <div class="col-xs-5">
                                                         <label> SĐT quản lý </label>
-                                                        <input type="text" id="managerPhoneNumber"
-                                                               class="form-control" name="managerPhoneNumber"
-                                                               th:value="${modelSearch.managerPhoneNumber}">
+                                                        <input type="text" id="managerphone"
+                                                               class="form-control" name="managerphone"
+                                                               th:value="${modelSearch.managerphone}">
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <label> Chọn nhân viên </label>
@@ -289,12 +289,12 @@
 
                                 <td th:text="${building.managerPhone}"></td>
 
-                                <td>1200 m2</td>
-                                <td>800 m2</td>
-                                <td>Feb 12</td>
-                                <td>Feb 12</td>
-                                <td>Feb 12</td>
-                                <td>Feb 12</td>
+                                <td th:text="${building.floorArea}"></td>
+                                <td th:text="${building.rentArea}"></td>
+                                <td th:text="${building.emptyRentArea}"></td>
+                                <td th:text="${building.price}"></td>
+                                <td th:text="${building.serviceFee}"></td>
+                                <td th:text="${building.brokerageFee}"></td>
                                 <td>
                                     <div class="hidden-sm hidden-xs btn-group">
                                         <button class="btn btn-xs btn-success" data-toggle="modal"

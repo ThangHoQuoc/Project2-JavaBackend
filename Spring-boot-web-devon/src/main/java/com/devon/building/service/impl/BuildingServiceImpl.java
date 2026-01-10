@@ -1,16 +1,15 @@
 package com.devon.building.service.impl;
 
-import com.devon.building.builder.BuildingSearchBuilder;
 import com.devon.building.convertor.BuildingConvertor;
-import com.devon.building.convertor.BuildingSearchBuilderConvertor;
 import com.devon.building.entity.BuildingEntity;
+import com.devon.building.entity.RentAreaEntity;
 import com.devon.building.entity.UserEntity;
-import com.devon.building.model.dto.BuildingDTO;
 import com.devon.building.model.dto.ResponseDTO;
 import com.devon.building.model.dto.StaffResponseDTO;
 import com.devon.building.model.request.BuildingSearchRequest;
 import com.devon.building.model.response.BuildingSearchResponse;
 import com.devon.building.repository.BuildingRepository;
+import com.devon.building.repository.RentAreaRepository;
 import com.devon.building.repository.UserRepository;
 import com.devon.building.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -34,7 +32,10 @@ public class BuildingServiceImpl implements BuildingService {
     private BuildingConvertor buildingConvertor;
 
     @Autowired
-    private BuildingSearchBuilderConvertor builderConvertor;
+    private RentAreaRepository rentAreaRepository;
+
+
+
 
     @Override
     public BuildingSearchResponse findId(Long id) {
@@ -45,18 +46,17 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     @Override
-    public List<BuildingSearchResponse> searchBuildings( BuildingSearchRequest buildingSearchRequest) {
-        BuildingSearchBuilder buildingSearchBuilder = builderConvertor.toBuildingSearchBuilder(buildingSearchRequest);
+    public List<BuildingSearchResponse> searchBuildings(BuildingSearchRequest buildingSearchRequest) {
 
-        List<BuildingEntity> entities = buildingRepository.searchBuildings(buildingSearchBuilder);
+        List<BuildingEntity> entities = buildingRepository.searchBuildings(buildingSearchRequest);
 
-//		BuildingEntity buildingEntity = buildingRepository.findById(4L).get(); // tránh lỗi NullPoniterEx
+
         List<BuildingSearchResponse> result = new ArrayList<>();
 
         for (BuildingEntity entity : entities) {
             BuildingSearchResponse buildingResponseDTO = buildingConvertor.toResponseDTO(entity);
+            buildingResponseDTO.setEmptyRentArea(null);
             result.add(buildingResponseDTO);
-
 
 
         }

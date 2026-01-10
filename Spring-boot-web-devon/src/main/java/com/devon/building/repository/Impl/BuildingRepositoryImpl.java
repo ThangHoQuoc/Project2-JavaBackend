@@ -1,7 +1,7 @@
 package com.devon.building.repository.Impl;
 
-import com.devon.building.builder.BuildingSearchBuilder;
 import com.devon.building.entity.BuildingEntity;
+import com.devon.building.model.request.BuildingSearchRequest;
 import com.devon.building.repository.BuildingRepositoryCustom;
 import com.devon.building.utils.StringUtil;
 import jakarta.persistence.EntityManager;
@@ -21,20 +21,18 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private void appendJoin(StringBuilder join, BuildingSearchBuilder buildingSearchBuilder) {
-        if (StringUtil.CheckList(buildingSearchBuilder.getTypeCode())) {
-            join.append(" INNER JOIN buildingrenttype ON b.id = buildingrenttype.buildingid ");
-            join.append(" INNER JOIN renttype rt ON buildingrenttype.renttypeid = rt.id ");
-        }
-        Long staffid = buildingSearchBuilder.getStaffId();
+    private void appendJoin(StringBuilder join, BuildingSearchRequest buildingSearchRequest) {
+
+        Long staffid = buildingSearchRequest.getStaffId();
 
         if (StringUtil.CheckNull(staffid)) {
             join.append(" INNER JOIN assignmentbuilding ab ON b.id = ab.buildingid ");
         }
 
-        Long rentAreaFrom = buildingSearchBuilder.getRentAreaFrom();
 
-        Long rentAreaTo = buildingSearchBuilder.getRentAreaTo();
+        Long rentAreaFrom = buildingSearchRequest.getRentAreaFrom();
+
+        Long rentAreaTo = buildingSearchRequest.getRentAreaTo();
 
         if (StringUtil.CheckNull(rentAreaFrom) || StringUtil.CheckNull(rentAreaTo)) {
             join.append(" INNER JOIN rentarea ra ON b.id = ra.buildingid ");
@@ -42,60 +40,49 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
 
     }
 
-    private void appendWhere(StringBuilder where, BuildingSearchBuilder buildingSearchBuilder) {
+    private void appendWhere(StringBuilder where, BuildingSearchRequest buildingSearchRequest) {
 
         // normal
 
         try {
-            Field[] fields = BuildingSearchBuilder.class.getDeclaredFields();
+            Field[] fields = BuildingSearchRequest.class.getDeclaredFields();
 
             for (Field field : fields) {
                 String fieldName = field.getName();
                 field.setAccessible(true);
+                Object value = field.get(buildingSearchRequest);
 
-                if (!fieldName.equals("staffId") && !fieldName.equals("typeCode") && !fieldName.startsWith("rentArea")
-                        && !fieldName.startsWith("rentPrice")) {
-
-                    Object value = field.get(buildingSearchBuilder);
-
-                    if (value != null) {
-                        if (field.getType().getName().equals("java.lang.Long")
-                                || field.getType().getName().equals("java.lang.Integer")) {
-                            if (fieldName.equals("name")) {
-                                where.append(" AND b." + fieldName.toLowerCase() + " LIKE '%" + value + "%'");
-                                continue;
-                            }
-                            if (fieldName.equals("street")) {
-                                where.append(" AND b." + fieldName.toLowerCase() + " LIKE '%" + value + "%'");
-                                continue;
-                            }
-                            if (fieldName.equals("ward")) {
-                                where.append(" AND b." + fieldName.toLowerCase() + " LIKE '%" + value + "%'");
-                                continue;
-                            }
-
-                            where.append(" AND b." + fieldName.toLowerCase() + " = " + value);
-
-                        } else if (field.getType().getName().equals("java.lang.String")) {
-                            where.append(" AND b." + fieldName.toLowerCase() + " LIKE '%" + value + "%'");
-
-                        }
-                    }
-
+                if (value == null
+                        || fieldName.equals("staffId")
+                        || fieldName.equals("typeCode")
+                        || fieldName.startsWith("rentArea")
+                        || fieldName.startsWith("rentPrice")) {
+                    continue;
                 }
+
+                if (value instanceof String str) {
+                    if (StringUtil.hasText(str)) {
+                        where.append(" AND b.").append(fieldName.toLowerCase()).append(" LIKE '%").append(str.trim()).append("%'");
+                    }
+                }
+
+                if (value instanceof Long || value instanceof Integer) {
+                    where.append(" AND b.").append(fieldName.toString()).append(" = ").append(value);
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         // special
-        Long staffId = buildingSearchBuilder.getStaffId();
+        Long staffId = buildingSearchRequest.getStaffId();
         if (StringUtil.CheckNull(staffId)) {
             where.append(" AND ab.staffid =  " + staffId);
         }
 
-        Long rentAreaFrom = buildingSearchBuilder.getRentAreaFrom();
-        Long rentAreaTo = buildingSearchBuilder.getRentAreaTo();
+        Long rentAreaFrom = buildingSearchRequest.getRentAreaFrom();
+        Long rentAreaTo = buildingSearchRequest.getRentAreaTo();
 
         if (StringUtil.CheckNull(rentAreaFrom) || StringUtil.CheckNull(rentAreaTo)) {
 
@@ -107,39 +94,44 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
                 where.append(" AND ra.value <= " + rentAreaTo);
             }
         }
-        Long rentPriceFrom = buildingSearchBuilder.getRentPriceFrom();
-        Long rentPriceTo = buildingSearchBuilder.getRentPriceTo();
+        Long rentPriceFrom = buildingSearchRequest.getRentPriceFrom();
+        Long rentPriceTo = buildingSearchRequest.getRentPriceTo();
 
-        if (rentPriceFrom!= null) {
+        if (rentPriceFrom != null) {
             where.append(" AND b.rentprice >= " + rentPriceFrom);
         }
 
-        if (rentPriceTo!= null) {
-            where.append(" AND b.rentprice <= " +rentPriceTo);
+        if (rentPriceTo != null) {
+            where.append(" AND b.rentprice <= " + rentPriceTo);
         }
 
-        List<String> typeCode = buildingSearchBuilder.getTypeCode();
+        List<String> typeCode = buildingSearchRequest.getTypeCode();
 
-        if (typeCode != null) {
-            where.append(
-                            " AND rt.code IN(" + typeCode.stream().map(it -> "'" + it + "'").collect(Collectors.joining(",")))
-                    .append(")");
+        if (typeCode != null && !typeCode.isEmpty()) {
+            where.append(" AND (");
+
+            String condition = typeCode.stream()
+                    .map(it -> " b.`type` LIKE '%" + it + "%' ")
+                    .collect(Collectors.joining(" OR "));
+
+            where.append(condition);
+            where.append(")");
         }
 
     }
 
     @Override
-    public List<BuildingEntity> searchBuildings(BuildingSearchBuilder buildingSearchBuilder) {
+    public List<BuildingEntity> searchBuildings(BuildingSearchRequest buildingSearchRequest) {
         StringBuilder sql = new StringBuilder(
-                "SELECT b.* FROM building b ");
+
+                "SELECT DISTINCT b.* FROM building b ");
         StringBuilder where = new StringBuilder(" WHERE 1=1 ");
 
-        appendJoin(sql, buildingSearchBuilder);
+        appendJoin(sql, buildingSearchRequest);
 
-        appendWhere(where, buildingSearchBuilder);
+        appendWhere(where, buildingSearchRequest);
 
         sql.append(where);
-        sql.append(" GROUP BY b.id");
 
         Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
 
