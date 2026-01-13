@@ -64,13 +64,11 @@ public class UserEntity extends BaseEntity implements Serializable {
         this.phone = phone;
     }
 
+    @OneToMany(mappedBy = "staff")
+    private List<AssignmentBuildingEntity> assignmentBuildings = new ArrayList<>();
 
-//	@OneToMany(mappedBy = "user" )
-//	List<UserRoleEntity> userRoleEntities = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(name = "userrole", joinColumns = @JoinColumn(name = "userid"), inverseJoinColumns = @JoinColumn(name = "roleid"))
-    List<RoleEntity> roles = new ArrayList<>();
+
 
 
 }

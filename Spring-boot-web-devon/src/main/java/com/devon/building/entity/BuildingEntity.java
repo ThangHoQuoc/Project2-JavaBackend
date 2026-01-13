@@ -51,6 +51,9 @@ public class BuildingEntity implements Serializable {
     @Column(name = "brokeragefee")
     Double brokeragefee;
 
+    @Column(name = "type")
+    String type;
+
     @Lob
     @Column(name = "image", length = Integer.MAX_VALUE, nullable = true)
     byte[] image;
@@ -69,6 +72,11 @@ public class BuildingEntity implements Serializable {
     Date createDate;
 
 
-   @OneToMany(mappedBy = "buildingEntity")
+   @OneToMany(mappedBy = "buildingEntity",fetch = FetchType.EAGER)
    List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "building")
+    private List<AssignmentBuildingEntity> assignmentBuildings = new ArrayList<>();
+
+
 }

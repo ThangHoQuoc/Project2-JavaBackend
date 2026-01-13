@@ -11,4 +11,8 @@ public interface RentAreaRepository extends JpaRepository<RentAreaEntity,Long> {
 
     Long getRentAreaEntity_ValueByBuildingEntity_Id(Long id);
 
+    void deleteAllByBuildingEntity_IdIn(List<Long> buildingIds);
+
+    void deleteAllByBuildingEntity_Id(Long buildingId);
+
 }

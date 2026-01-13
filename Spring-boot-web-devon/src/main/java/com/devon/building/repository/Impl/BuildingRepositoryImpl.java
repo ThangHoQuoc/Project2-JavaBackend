@@ -30,6 +30,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         }
 
 
+
         Long rentAreaFrom = buildingSearchRequest.getRentAreaFrom();
 
         Long rentAreaTo = buildingSearchRequest.getRentAreaTo();

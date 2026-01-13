@@ -20,7 +20,7 @@ public class BuildingSearchResponse {
     String rentArea;
     List<Long> emptyRentArea;
     long serviceFee;
-    double brokerageFee;
+    Double brokerageFee;
     Long price;
     String managerName;
     String managerPhone;

@@ -1,6 +1,7 @@
 package com.devon.building.controller.admin.building;
 
 
+import com.devon.building.entity.BuildingEntity;
 import com.devon.building.enums.District;
 import com.devon.building.enums.RentType;
 import com.devon.building.form.CustomerForm;
@@ -57,14 +58,15 @@ public class BuildingController {
         model.addAttribute("districts", District.getDistrict());
         model.addAttribute("typeCode", RentType.getTypeCode());
         model.addAttribute("building",new BuildingDTO());
+
         return "admin/building/buildingEdit";
     }
     @GetMapping("/update/{id}")
-    public String createBuilding(@PathVariable Long id, Model model) {
-        BuildingSearchResponse building =  buildingService.findId(id);
+    public String createBuilding(@PathVariable Long id, Model model){
+        BuildingDTO building = buildingService.findId(id);
         model.addAttribute("districts", District.getDistrict());
         model.addAttribute("typeCode", RentType.getTypeCode());
-        model.addAttribute("building",building);
+        model.addAttribute("building", building);
         return "admin/building/buildingEdit";
     }
 }

@@ -397,6 +397,8 @@
             dataType: 'json', //data type expected from server(From server to client)
             success: function (response) {
                 alert(response.message);
+                window.location.reload();
+
             },
             error: function (err) {
                 alert("Xóa tòa nhà thất bại!");
@@ -440,7 +442,7 @@
 
         const staffIds = [];
         $('#staffList tbody input[type="checkbox"]:checked').each(function () {
-            staffIds.push($(this).val());
+            staffIds.push(Number($(this).val()));
         });
 
         if (staffIds.length === 0) {
@@ -449,8 +451,8 @@
         }
 
         const json = {
-            buildingId: buildingId,
-            staffs: staffIds
+            buildingId: Number(buildingId),
+            staffIds: staffIds.map(Number)
         };
 
         assignBuilding(json);
@@ -459,7 +461,7 @@
 
     function assignBuilding(json) {
             $.ajax({
-                url: "/admin/api/buildings/assgin",
+                url: "/admin/api/buildings/assign",
                 type: "PUT", // request method
                 data: JSON.stringify(json),// convert object to JSON string
                 contentType: "application/json", // sending data type(From client to server)

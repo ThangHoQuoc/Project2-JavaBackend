@@ -1,7 +1,6 @@
 package com.devon.building.model.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,45 +8,71 @@ import java.util.List;
 
 @Getter
 @Setter
-public class BuildingDTO extends AbstractDTO{
-    @NotBlank(message = "Name Building not be blank")
+public class BuildingDTO extends AbstractDTO {
+
+    @NotBlank(message = "Building name must not be blank")
     private String name;
+
+    @NotBlank(message = "Street must not be blank")
     private String street;
+
+    @NotBlank(message = "Ward must not be blank")
     private String ward;
-    @NotBlank(message = "District not be blank")
+
+    @NotBlank(message = "District must not be blank")
     private String district;
+
+    @Min(value = 0, message = "Number of basement must be greater than or equal to 0")
     private Long numberOfBasement;
+
+    @Positive(message = "Floor area must be greater than 0")
     private Long floorArea;
+
     private String level;
-    @Size(min = 1, message = "Type Code must not be less than 1")
+
+    @NotEmpty(message = "Type Code must not be empty")
     private List<String> typeCode;
-    private String overtimeFee;
+
+    private Long overtimeFee;
     private String electricityFee;
     private String deposit;
     private String payment;
     private String rentTime;
     private String decorationTime;
     private String rentPriceDescription;
-    private String carFee;
-    private String motofee;
-    private String waterFee;
+    private Long carFee;
+    private Long motoFee;
+    private Long waterFee;
     private String structure;
     private String direction;
     private String note;
-    @NotBlank(message = "Rent Area not be blank")
+
+    @NotBlank(message = "Rent area must not be blank")
+    @Pattern(
+            regexp = "^\\d+(,\\d+)*$",
+            message = "Rent area must be numbers separated by commas (e.g. 100,200)"
+    )
     private String rentArea;
+
+    @NotBlank(message = "Manager name must not be blank")
     private String managerName;
-    @NotBlank
-    @Size(min = 10,message = "Manager Phone must not be less than 10 digit")
+
+    @NotBlank(message = "Manager phone must not be blank")
+    @Pattern(
+            regexp = "^\\d{10}$",
+            message = "Manager phone number must contain exactly 10 digits"
+    )
     private String managerPhoneNumber;
 
-    private Long rentPrice;
-    private String serviceFee;
-    private double brokeragefee;
+    @Positive(message = "Rent price must be greater than 0")
+    private Double rentPrice;
 
+    private Long serviceFee;
+
+    @PositiveOrZero(message = "Brokerage fee must be greater than or equal to 0")
+    private Double brokerageFee;
 
     private String image;
     private String imageBase64;
     private String imageName;
-
 }

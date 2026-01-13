@@ -1,7 +1,6 @@
 package com.devon.building.model.request;
 
 
-import jakarta.annotation.Nonnull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
